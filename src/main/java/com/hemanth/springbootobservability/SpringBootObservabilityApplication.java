@@ -4,6 +4,7 @@ import com.hemanth.springbootobservability.post.JsonPlaceHolderService;
 import com.hemanth.springbootobservability.post.Post;
 import io.micrometer.observation.Observation;
 import io.micrometer.observation.ObservationRegistry;
+import io.micrometer.observation.annotation.Observed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -33,13 +34,22 @@ public class SpringBootObservabilityApplication {
     }*/
 
 
-    @Bean
+   /* @Bean
     CommandLineRunner commandLineRunner(JsonPlaceHolderService jsonPlaceHolderService, ObservationRegistry observationRegistry) {
         return args -> {
             Observation.createNotStarted("posts.load-all-posts", observationRegistry)
                     .lowCardinalityKeyValue("author", "Hemanth")
                     .contextualName("post-service.find-all")
                     .observe(jsonPlaceHolderService::findAll);
+        };
+    }*/
+
+
+    @Bean
+    @Observed(name = "posts.load-all-posts",contextualName = "post.find-all")
+    CommandLineRunner commandLineRunner(JsonPlaceHolderService jsonPlaceHolderService, ObservationRegistry observationRegistry) {
+        return args -> {
+            jsonPlaceHolderService.findAll();
         };
     }
 
